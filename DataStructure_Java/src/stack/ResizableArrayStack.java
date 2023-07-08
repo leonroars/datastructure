@@ -146,7 +146,7 @@ public class ResizableArrayStack<Item> implements Iterable<Item> {
         }
 
         public boolean hasNext() {return this.iterPointer > 0;}
-        public Item next(){return this.innerArray[iterPointer--];}
+        public Item next(){return this.innerArray[--iterPointer];}
         public void remove(){}
 
     }
@@ -175,5 +175,19 @@ public class ResizableArrayStack<Item> implements Iterable<Item> {
         rs1.pop();
         rs1.peek();
         System.out.printf("Current Capacity: %d\n", rs1.currentCap);
+
+        /*
+          for(ObjectType e : collection){//action}
+            - Enhanced for loop. Also referred to as "for-each statement"
+            - This is considered to be a better option over while loop that process same logic.
+                - 1) More close to idiomatic
+                - 2) Thus, better readability
+                - 3) Less pollute-prone on method scope.
+                    - A while loop requires outside-of-block-scope variable for iterator or index locator on its action.
+                    - That means, this method scope variable remains and takes space even after loop process.
+         */
+        for (Integer integer : rs1) {
+            System.out.printf("%d\n", integer);
+        }
     }
 }

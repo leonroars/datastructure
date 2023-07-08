@@ -7,7 +7,7 @@ public class FixedArrayStack<Item> implements Iterable<Item> {
     private int topPointer;
     private int capacity;
 
-    @SuppressWarnings("unchecked") // Optional: Suppressing Unchecked casting warning(Object => Item)
+    @SuppressWarnings("unchecked") // Optional: Suppressing unchecked casting warning(Object => Item)
     public FixedArrayStack(int cap) {
         this.capacity = cap;
         this.a = (Item[]) new Object[this.capacity];
@@ -86,14 +86,13 @@ public class FixedArrayStack<Item> implements Iterable<Item> {
         System.out.printf("s1 size: %d\n", sz);
         System.out.printf("s1 top pointer: %d\n", s1.topPointer);
 
-        Iterator<Integer> s1iter = s1.iterator();
-
-        // Using s1's Iterable<> property.
+        // Using forEach iteration
         for(Integer i : s1){
             System.out.printf("%d\n", i);
         }
 
-        // Using
+        // Using while iteration.
+        Iterator<Integer> s1iter = s1.iterator();
         while(s1iter.hasNext()){
             Integer i = s1iter.next();
             System.out.printf("%d\n", i);
