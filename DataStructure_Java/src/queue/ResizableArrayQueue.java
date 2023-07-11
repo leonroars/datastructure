@@ -1,29 +1,31 @@
 package queue;
 import java.util.Iterator;
 
-// What is this <Item> called? why do we need this and why don't we need this on constructor?
+// <Item>
+// :A placeholder for keyword that specifies the type which this data structure can hold.
+// : In here, <Item>, is called generic type parameter.
 public class ResizableArrayQueue<Item> implements Iterable<Item> {
 
     //Initializing instance variables.
-    // Q. What decides instance member have to be private or not?
     private final int frontPointer = 0;
     private int rearPointer = 0;
     private int currentCap;
     private Item[] rq;
 
-    //Q. Where should we instantiate instance variables?
     //Q. When do we have to use 'this' or when should we not use it?
-
+    // this keyword is used in following situation.
+    // 1) Accessing instance variable.
+    // 2) Method chaining
+    // 3) Invoking constructor.: this()
     @SuppressWarnings("unchecked")
     public ResizableArrayQueue(int initCap){
         this.currentCap = initCap;
-        rq = (Item[]) new Object[this.currentCap];
+        rq = (Item[]) new Object[this.currentCap]; // 'Object' : Superclass of all the classes in Java including user-defined class. Thus, any type of object can be assigned to 'Object' type variable.
     }
 
     public boolean isEmpty(){return this.rearPointer == 0;}
     public int size(){return this.rearPointer;}
 
-    //I kinda simplified logic i used in ResizableArrayStack. Will it work fine...?
     public boolean isUnderHalf(){return this.size() < this.currentCap / 2;}
 
     @SuppressWarnings("unchecked")
