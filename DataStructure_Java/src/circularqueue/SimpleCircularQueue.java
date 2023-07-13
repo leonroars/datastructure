@@ -1,6 +1,6 @@
 package circularqueue;
 
-public class SimpleFixedArrayCircularQueue {
+public class SimpleCircularQueue {
     int front;
     int rear;
     int[] cq;
@@ -8,7 +8,7 @@ public class SimpleFixedArrayCircularQueue {
     int maxSize;
 
     // - Constructor()
-    public SimpleFixedArrayCircularQueue(int maxsize) {
+    public SimpleCircularQueue(int maxsize) {
         this.maxSize = maxsize;
         this.cq = new int[maxSize];
         this.front = 0;
@@ -79,7 +79,7 @@ public class SimpleFixedArrayCircularQueue {
     }
     // Test in Main()
     public static void main(String[] args){
-        SimpleFixedArrayCircularQueue testcq = new SimpleFixedArrayCircularQueue(8);
+        SimpleCircularQueue testcq = new SimpleCircularQueue(8);
         testcq.enqueue(0);
         testcq.enqueue(1);
         testcq.enqueue(2);
