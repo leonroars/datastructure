@@ -1,7 +1,7 @@
 package circularqueue;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import queue.ResizableArrayQueue;
+
 
 public class ResizableArrayCircularQueue<Item> implements Iterable<Item> {
     private Item[] raq;
@@ -18,7 +18,6 @@ public class ResizableArrayCircularQueue<Item> implements Iterable<Item> {
     }
 
     public boolean isEmpty(){return this.size() == 0;}
-    public boolean isFull(){return this.size() == this.currentCap;}
 
     public int size(){return (this.rearP - this.frontP + this.currentCap) % this.currentCap;}
     public boolean isUnderHalf(){return this.size() < (this.currentCap / 2);}
@@ -27,20 +26,24 @@ public class ResizableArrayCircularQueue<Item> implements Iterable<Item> {
     public void resize(float ratio){
         int newCap = (int)Math.ceil(this.currentCap * ratio);
         Item[] newArr = (Item[]) new Object[newCap];
+        int newRear = 0;
 
         // Shallow-copying underlying array
-        for(int i = this.frontP; i <= (this.size() + (this.frontP-1)); i++){
+        for(int i = this.frontP; i <= (this.frontP + this.size()); i++){
             if(i < this.currentCap){
                 newArr[i] = this.raq[i];
+                newRear = i;
             } else {
-                newArr[i % this.currentCap] = this.raq[i % this.currentCap];
+                newArr[i] = this.raq[i % this.currentCap];
+                newRear = i;
             }
         }
         this.raq = newArr;
         this.currentCap = newCap;
+        this.rearP = newRear;
     }
     public void enqueue(Item item){
-        if(this.size() == this.currentCap){
+        if(this.size() == this.currentCap -1){
             this.resize(1.5f);
         }
         int enqPos = (this.rearP + this.currentCap) % this.currentCap;
@@ -69,27 +72,33 @@ public class ResizableArrayCircularQueue<Item> implements Iterable<Item> {
         return this.raq[this.frontP];
     }
 
-    public Iterator<Item> iterator() {return new CircularQIterator(this.raq, this.frontP, this.rearP, this.currentCap);}
+    public Iterator<Item> iterator() {return new CircularQIterator(this.raq, this.frontP, this.rearP, this.currentCap, this.size());}
 
-    // Q. What is the difference between using public class and inner class for iterator??
+
     public class CircularQIterator implements Iterator<Item>{
         Item[] cqReciever;
         int cqfrontP;
         int cqrearP;
         int elemCounter;
+        int size;
         int capacity;
 
-        public CircularQIterator(Item[] CQ, int frontP, int rearP, int currentCapacity){
+        public CircularQIterator(Item[] CQ, int frontP, int rearP, int currentCapacity, int size){
             this.cqReciever = CQ;
             this.cqfrontP = frontP;
             this.cqrearP = rearP;
             this.elemCounter = 0;
             this.capacity = currentCapacity;
+            this.size = size;
         }
 
-        // This part caused warning when it was without public access identifier. Why? => Briefly on ChatGPT.
+        //Q. This part caused warning when it was without public access identifier. Why?
+        //A. The error you've encountered is what generally referred to as 'weaker-access-privileges' error.
+        //   This error belongs to 'visibility conflict'.
+        //   If you implement certain interface and want to make overriden method from it,
+        //   then, that overriden method must have same or wider access privileges that the method it overrides in the interface.
         public boolean hasNext(){
-            return elemCounter < this.cqReciever.length;
+            return elemCounter < this.size;
         }
 
         public Item next(){
@@ -109,6 +118,8 @@ public class ResizableArrayCircularQueue<Item> implements Iterable<Item> {
         raq1.enqueue(0);
         raq1.enqueue(1);
         raq1.enqueue(2);
+        System.out.printf("The number of elements at this moment: %d\n", raq1.size());
+
         raq1.dequeue();
         // Pointers movement check after dequeue():1
         System.out.printf("peek(): %d\n", raq1.peek());
@@ -126,14 +137,21 @@ public class ResizableArrayCircularQueue<Item> implements Iterable<Item> {
         System.out.printf("Current raq1 rearP has to be 0. : %d\n", raq1.rearP);
         raq1.enqueue(400); // Refers to 4 at 0 index.
 
-
         System.out.printf("peek(): %d\n", raq1.peek());
-        System.out.printf("Current raq1 frontP: %d\n", raq1.frontP);
-        System.out.printf("Current raq1 rearP: %d\n", raq1.rearP);
-
         System.out.printf("Capacity: %d\n", raq1.currentCap);
         System.out.printf("Current raq1 frontP: %d\n", raq1.frontP);
         System.out.printf("Current raq1 rearP: %d\n", raq1.rearP);
+
+        // Invoke full() status & resize
+        raq1.enqueue(5);
+        System.out.printf("The number of elements at this moment: %d\n", raq1.size());
+        System.out.printf("Current Capacity: %d\n", raq1.currentCap);
+        System.out.printf("Current frontP: %d\n", raq1.frontP);
+        System.out.printf("Current rearP: %d\n", raq1.rearP);
+
+        for(int i : raq1){
+            System.out.printf("%d\n", i);
+        }
 
     }
 
