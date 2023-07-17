@@ -6,32 +6,35 @@ public class FixedArrayCircularQueue<Item> implements Iterable<Item> {
     Item[] faq;
     private int frontP;
     private int rearP;
-    private int currentCap;
+    private int cap;
 
     // Setting constructor.
     @SuppressWarnings("unchecked")
     public FixedArrayCircularQueue(int initCapacity){
         this.faq = (Item[])new Object[initCapacity];
-        this.currentCap = initCapacity;
+        this.cap = initCapacity;
         this.frontP = 0;
         this.rearP = 0;
     }
 
-    // Convention:
-    //      A full-status is set to be 1-less than full capacity in fixed-capacity circular queue.
-    //      This is on purpose for 2-reasons.
-    //          - For discrimination of full-status and empty-status.
-    //          - For avoiding overflow.
+    /** <b>Implementation Convention for isFull() & isEmpty()</b>
+     *
+     *<p>      A full-status is set to be 1-less than full capacity in fixed-capacity circular queue.
+     *<p>      This is on purpose for 2-reasons.
+     *<p>          - For discrimination between full-status and empty-status.
+     *<p>          - For avoiding overflow.
+     */
     public boolean isEmpty(){return this.frontP == this.rearP;}
-    public boolean isFull(){return this.size() == this.currentCap - 1;}
+    public boolean isFull(){return this.size() == this.cap - 1;}
 
-    public int size(){return ((this.rearP - this.frontP) + this.currentCap) % this.currentCap;}
+
+    public int size(){return ((this.rearP - this.frontP) + this.cap) % this.cap;}
 
     public void enqueue(Item item){
         if(!this.isFull()){
             this.faq[this.rearP] = item;
             System.out.printf("enqueue() has been successfully processed!: %s\n", this.faq[this.rearP]);
-            this.rearP = (this.rearP + 1) % this.currentCap;
+            this.rearP = (this.rearP + 1) % this.cap;
         }else{
             System.out.println("Circular Queue is now FULL!\n");
         }
@@ -56,7 +59,7 @@ public class FixedArrayCircularQueue<Item> implements Iterable<Item> {
         }
     }
 
-    public Iterator<Item> iterator() {return new CircularQIterator(this.frontP, this.rearP, this.faq, this.size(), this.currentCap);}
+    public Iterator<Item> iterator() {return new CircularQIterator(this.frontP, this.rearP, this.faq, this.size(), this.cap);}
 
     public class CircularQIterator implements Iterator<Item>{
         private int frontCounter;
