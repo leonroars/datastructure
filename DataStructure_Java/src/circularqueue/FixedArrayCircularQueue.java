@@ -103,7 +103,7 @@ public class FixedArrayCircularQueue<Item> implements Iterable<Item> {
         System.out.printf("Currently Full?: %b\n", faq1.isFull());
         System.out.printf("Currently Empty?: %b\n", faq1.isEmpty());
         System.out.printf("Scheduled to be dequeue() next time: %s\n", faq1.peek());
-        System.out.printf("\n");
+        System.out.println("\n");
 
         //dequeue(), pointers' circular movement test
         faq1.dequeue();

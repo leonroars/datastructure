@@ -95,7 +95,6 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
     /**
      * <b>popFront()</b>
      * <p> {@code pushRear()} retrieve item from 'lastly added' {@code front} pointer position of underlying array.
-     * @param none
      * @return Item frontPopped
      */
     public Item popFront(){
@@ -114,7 +113,6 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
     /**
      * <b>popRear()</b>
      * <p> {@code popRear()} retrieve item from 'lastly added' {@code rear} pointer position of underlying array.
-     * @param none
      * @return Item rearPopped
      */
     public Item popRear(){
@@ -175,6 +173,21 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
         }
 
         public void remove() {}
+    }
+
+    //Test code
+    public static void main(String[] args){
+        FixedArrayDeque<Integer> fad1 = new FixedArrayDeque<>(6);
+        fad1.pushFront(-1);
+        fad1.pushRear(0);
+        fad1.pushFront(-2);
+        fad1.pushRear(2);
+        System.out.printf("Current front : %d\n", fad1.front);
+        System.out.printf("Current rear : %d\n", fad1.rear);
+        System.out.printf("Current size: %d\n", fad1.size());
+
+        System.out.printf("Next popFront() : %d\n", fad1.peekFront());
+        System.out.printf("Next popRear() : %d\n", fad1.peekRear());
     }
 
 }
