@@ -2,6 +2,13 @@ package deque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * <b>Related Exercises</b>
+ * <pre>
+ *     - Exercise 1.3.33 <b><i>Algorithms</i></b> by Robert Sedgewick & Kevin Wayne
+ *     - Exercise 10.1-6 <b><i>Introduction to Algorithms</i></b> by CLRS
+ */
+
 public class FixedArrayDeque<Item> implements Iterable<Item>{
 
     /**
@@ -32,10 +39,10 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
      * <p> This issue occurs for vice-versa.
      * <p> To resolve this issue, I designed I/O and status-examination logic as following:
      *<pre>
-     * - pushFront(item) : Move pointer count-clockwise, then add item into rear pointer location of array.
-     * - pushRear(item) :  Add item into front pointer location of array, then move pointer clockwise.
-     * - popFront() : Extract item from rear pointer location of array, then move pointer counter-clockwise.
-     * - popRear() : Move front pointer clockwise, then extract item from decreased front pointer location of array.
+     * - pushFront(item) : Move pointer counter-clockwise, then add item into rear pointer location of array.
+     * - pushRear(item) :  Add item into rear pointer location of array, then move pointer clockwise.
+     * - popFront() : Extract item from front pointer location of array, then move pointer clockwise.
+     * - popRear() : Move rear pointer counter-clockwise, then extract item from decreased rear pointer location of array.
      *</pre>
      */
 
