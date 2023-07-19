@@ -43,7 +43,7 @@ public class ResizableArrayCircularQueue<Item> implements Iterable<Item> {
         this.rearP = newRear;
     }
     public void enqueue(Item item){
-        if(this.size() == this.currentCap -1){
+        if(this.size() == this.currentCap - 1){
             this.resize(1.5f);
         }
         int enqPos = (this.rearP + this.currentCap) % this.currentCap;
