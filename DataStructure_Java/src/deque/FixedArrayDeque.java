@@ -176,6 +176,7 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
         public Item next(){
             Item nextItem = this.dReceiver[this.locator];
             this.locator = ((this.locator + 1) + this.dReceiver.length) % this.dReceiver.length;
+            this.counter++;
             return nextItem;
         }
 
@@ -184,7 +185,10 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
 
     //Test code
     public static void main(String[] args){
+        //Integer Deque Initialization.
         FixedArrayDeque<Integer> fad1 = new FixedArrayDeque<>(6);
+
+        // Basic-4 IO operation & Pointers Movement & size() Test
         fad1.pushFront(-1);
         fad1.pushRear(0);
         fad1.pushFront(-2);
@@ -193,8 +197,41 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
         System.out.printf("Current rear : %d\n", fad1.rear);
         System.out.printf("Current size: %d\n", fad1.size());
 
+        // peek-2 Test.
         System.out.printf("Next popFront() : %d\n", fad1.peekFront());
         System.out.printf("Next popRear() : %d\n", fad1.peekRear());
+
+        //Iteration Test
+        for(int i : fad1){
+            System.out.printf("%d\n", i);
+        }
+
+        // isFull()Test.
+        fad1.pushFront(-3);
+        System.out.printf("isFull()? : %b\n", fad1.isFull());
+
+        // A push-prevention at full-status Test.
+        fad1.pushRear(3);
+        System.out.printf("Current Front Pointer should be locating index_3: %d\n", fad1.front);
+        System.out.printf("Current Rear Pointer should be locating index_2: %d\n", fad1.rear);
+
+        //pop*() Test
+        fad1.popFront();
+        System.out.printf("current front pointer should be locating index_4: %d\n", fad1.front);
+
+        fad1.popRear();
+        System.out.printf("current rear pointer should be locating index_1: %d\n", fad1.rear);
+
+        // popFront() till front meets rear & become isEmpty() Test
+        fad1.popFront();
+        fad1.popFront();
+        fad1.popFront();
+        System.out.printf("The number of items at the moment: %d\n", fad1.size());
+        System.out.printf("isEmpty? : %b\n", fad1.isEmpty());
+
+        //pop-prevention at empty-status testing: For both-direction
+        fad1.popRear(); // Works fine. Threw exception saying deque is empty currently.
+        fad1.popFront(); // Works fine. Threw exception saying deque is empty currently.
     }
 
 }
