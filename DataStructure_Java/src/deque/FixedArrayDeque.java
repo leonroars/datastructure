@@ -154,7 +154,7 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
     // Iter from front pointer to rear pointer - 1 in clockwise order.;
     public Iterator<Item> iterator() {return new FADIterator(this.front, this.rear, this.size, this.fad);}
 
-    public class FADIterator<Item> implements Iterator<Item>{
+    public class FADIterator implements Iterator<Item>{
         private int frontP;
         private int rearP;
         private int locator;
