@@ -3,7 +3,7 @@ package deque;
 import java.util.NoSuchElementException;
 import java.util.Iterator;
 
-public class ResizableArrayDeque<Item> implements Iterable<Item>{
+public class ResizableArrayDeque<Item> implements Iterable<Item> {
     private Item[] rad;
     private int front;
     private int rear;
@@ -36,27 +36,18 @@ public class ResizableArrayDeque<Item> implements Iterable<Item>{
         int newCap = (int) Math.ceil(this.currentCap * ratio);
         Item[] newArr = (Item[]) new Object[newCap];
         int newFront = newCap - (this.currentCap - this.front);
-        int newRear = 0;
 
         //Shallow-Copying
-        int frontCounter = this.front;
-        for(int i = frontCounter; i < (frontCounter + this.size()); i++){
+        for(int i = this.front; i < (this.front + this.size()); i++){
             if(i < this.currentCap){
-                // I designed this array-copying logic so that resizing actually looks like inserting increased space to be inserted between front-rear pointers.
-                newArr[newCap - (this.currentCap - this.front)] = this.rad[i];
-
+                // I designed this array-copying logic in a way that resizing actually looks like inserting increased space to be inserted between front-rear pointers.
+                newArr[newCap - (this.currentCap - i)] = this.rad[i % this.currentCap];
             } else {
                 newArr[i % this.currentCap] = this.rad[i % this.currentCap];
-
             }
-            // To avoid 'pointer collision' - See 'FixedArrayDeque: I/O Operations and status-examination logics for Deque',
-            // I will design rear pointer to be locating 'next-scheduled-to-be-pushed-into' position.
-            // Considering that, newRear has to be i+1: As for-loop will stop right before where original rear pointer is locating.
-            newRear = (i + 1) % this.currentCap;
         }
         // Updating instance variables.
         this.front = newFront;
-        this.rear = newRear;
         this.rad = newArr;
         this.currentCap = newCap;
 
@@ -165,59 +156,81 @@ public class ResizableArrayDeque<Item> implements Iterable<Item>{
             this.locator = frontP;
         }
 
-        public boolean hasNext() {return this.iterCounter <= this.size;}
+        public boolean hasNext() {
+            return this.iterCounter < this.size;
+        }
+
         public Item next() {
-            Item iterItem = this.radReceiver[((this.locator + this.cap) % this.cap)];
-            this.locator++;
+            Item nextItem = this.radReceiver[this.locator];
+            this.locator = ((this.locator + 1) + this.cap) % this.cap;
             this.iterCounter++;
-            return iterItem;
-        }
-        public void remove() {}
-    }
-
-    // Test code
-    public static void main(String[] args){
-        // Instantiate
-        ResizableArrayDeque<Integer> rad1 = new ResizableArrayDeque<>(6);
-
-        // push*() test
-        rad1.pushFront(-1);
-        rad1.pushRear(0);
-        rad1.pushFront(-2);
-        rad1.pushRear(1);
-        rad1.pushFront(-3); // front : at index_3(item contains) / rear : at index_2(not containing item) / The number of item : 5 / Not Full.
-
-        // status-examination & pointers movement test
-        System.out.printf("Current front pointer: %d\n", rad1.front);
-        System.out.printf("Current rear pointer: %d\n", rad1.rear);
-        System.out.printf("The number of items: %d\n", rad1.size());
-        System.out.printf("isEmpty()? : %b\n", rad1.isEmpty());
-        System.out.printf("isFull()? : %b\n", rad1.isFull());
-
-        // full-status test
-        rad1.pushRear(2);
-        System.out.printf("Current front pointer: %d\n", rad1.front);
-        System.out.printf("Current rear pointer: %d\n", rad1.rear);
-        System.out.printf("The number of items: %d\n", rad1.size());
-        System.out.printf("Current Capacity: %d\n", rad1.currentCap);
-        System.out.printf("isEmpty()? : %b\n", rad1.isEmpty());
-        System.out.printf("isFull()? : %b\n", rad1.isFull());
-
-        // resize()_enlarging test: KEEP YOUR EYES ON array-copying result.
-        rad1.pushFront(5); // front pointer should be locating '5(containing item)', rear should be locating '3(not containing item)'
-        System.out.printf("Current front pointer: %d\n", rad1.front);
-        System.out.printf("Current rear pointer: %d\n", rad1.rear); // Rear pointer gone wrong. NEED TO BE FIXED!
-        System.out.printf("The number of items: %d\n", rad1.size());
-        System.out.printf("Current Capacity: %d\n", rad1.currentCap);
-        System.out.printf("isEmpty()? : %b\n", rad1.isEmpty());
-        System.out.printf("isFull()? : %b\n", rad1.isFull());
-
-        // Iteration test => Error,,,,
-        for(int i : rad1){
-            System.out.printf("%d\n", i);
+            return nextItem;
         }
 
-
+        public void remove() {
+        }
 
     }
-}
+
+
+        // Test code
+        public static void main(String[] args) {
+            // Instantiate
+            ResizableArrayDeque<Integer> rad1 = new ResizableArrayDeque<>(6);
+
+            // push*() test => Passed!
+            rad1.pushFront(-1);
+            rad1.pushRear(0);
+            rad1.pushFront(-2);
+            rad1.pushRear(1);
+            rad1.pushFront(-3); // front : at index_3(item contains) / rear : at index_2(not containing item) / The number of item : 5 / Not Full.
+
+            // status-examination & pointers movement test => Passed!
+            System.out.printf("Current front pointer: %d\n", rad1.front);
+            System.out.printf("Current rear pointer: %d\n", rad1.rear);
+            System.out.printf("The number of items: %d\n", rad1.size());
+            System.out.printf("isEmpty()? : %b\n", rad1.isEmpty());
+            System.out.printf("isFull()? : %b\n", rad1.isFull());
+
+            // full-status test => Passed!
+            rad1.pushRear(2);
+            System.out.printf("Current front pointer: %d\n", rad1.front);
+            System.out.printf("Current rear pointer: %d\n", rad1.rear);
+            System.out.printf("The number of items: %d\n", rad1.size());
+            System.out.printf("Current Capacity: %d\n", rad1.currentCap);
+            System.out.printf("isEmpty()? : %b\n", rad1.isEmpty());
+            System.out.printf("isFull()? : %b\n", rad1.isFull());
+
+            // resize()_enlarging test: KEEP YOUR EYES ON array-copying result.
+            rad1.pushFront(5); // front pointer should be locating '5(containing item)', rear should be locating '3(not containing item)' => Passed!
+            System.out.printf("Current front pointer: %d\n", rad1.front);
+            System.out.printf("Current rear pointer: %d\n", rad1.rear);
+            System.out.printf("The number of items: %d\n", rad1.size());
+            System.out.printf("Current Capacity: %d\n", rad1.currentCap);
+            System.out.printf("isEmpty()? : %b\n", rad1.isEmpty());
+            System.out.printf("isFull()? : %b\n", rad1.isFull());
+
+            // Iteration Test => Passed!!
+            for(int i : rad1){
+                System.out.printf("%d\n", i);
+            }
+
+            // pop*() operations & size() % empty-status examination test => Passed!
+            rad1.popFront(); // front: 6(item-containing) _ rear: 3(item-not-containing) _ 6
+            rad1.popRear(); // front: 6(item-containing) _ rear: 2(item-not-containing) _ 5
+            rad1.popFront(); // front: 7(item-containing) _ rear: 2(item-not-containing) _ 4
+            rad1.popRear(); // front: 7(item-containing) _ rear: 1(item-not-containing) _ 3
+            rad1.popFront(); // front: 8(item-containing) _ rear: 1(item-not-containing) _ 2
+            rad1.popRear(); // front: 8(item-containing) _ rear: 0(item-not-containing) _ 1
+            rad1.popFront(); // front: 0(empty) _ rear: 0(empty) _ 0
+            System.out.printf("Current front pointer: %d\n", rad1.front);
+            System.out.printf("Current rear pointer: %d\n", rad1.rear);
+            System.out.printf("The number of items: %d\n", rad1.size());
+            System.out.printf("Current Capacity: %d\n", rad1.currentCap);
+            System.out.printf("isEmpty()? : %b\n", rad1.isEmpty());
+            System.out.printf("isFull()? : %b\n", rad1.isFull());
+
+
+        }
+    }
+

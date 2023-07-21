@@ -183,7 +183,7 @@ public class FixedArrayDeque<Item> implements Iterable<Item>{
         public void remove() {}
     }
 
-    //Test code
+
     public static void main(String[] args){
         //Integer Deque Initialization.
         FixedArrayDeque<Integer> fad1 = new FixedArrayDeque<>(6);
