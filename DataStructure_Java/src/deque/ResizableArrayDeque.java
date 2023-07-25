@@ -229,8 +229,6 @@ public class ResizableArrayDeque<Item> implements Iterable<Item> {
             System.out.printf("Current Capacity: %d\n", rad1.currentCap);
             System.out.printf("isEmpty()? : %b\n", rad1.isEmpty());
             System.out.printf("isFull()? : %b\n", rad1.isFull());
-
-
         }
     }
 
