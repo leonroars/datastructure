@@ -34,6 +34,7 @@ class UserDeque:
     def appendLeft(self, item):
         # Add capacity to prevent front pointer having negative integer.
         self.left = ((self.left - 1) + self.capacity) % self.capacity
+        self.ud[self.left] = item
     
     def pop(self):
         self.right = ((self.right - 1) + self.capacity) % self.capacity
