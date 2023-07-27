@@ -29,3 +29,17 @@ print(dq)
 # Test pop*() operations
 print(dq.pop()) # 6
 print(dq.popleft()) # "c"
+
+# Check current elements status
+print(dq)
+
+# Test rotate() & remove() & clear()
+dq.rotate(3) # I could see that rotate() performs circular-roatating deque.
+print(dq)
+
+dq.remove(3) # Removes given element from deque
+print(dq)
+
+dq.clear()
+print(dq)
+

@@ -43,7 +43,6 @@ class UserDeque:
             print("Deque is full currently. append cannot be processed!")
     
     def pop(self):
-        
         if not self.is_empty():
             self.right = ((self.right - 1) + self.capacity) % self.capacity
             popped = self.ud[self.right]
