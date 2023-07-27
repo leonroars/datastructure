@@ -27,28 +27,41 @@ class UserDeque:
     
     # append(self, item): Pushes item into rear position. Then update rear pointer.
     def append(self, item):
-        self.ud[self.right] = item
-        self.right = (self.right + 1) % self.capacity
+        if not self.is_full():
+            self.ud[self.right] = item
+            self.right = (self.right + 1) % self.capacity
+        else:
+            print("Deque is full currently. append cannot be processed!")
     
     # appendFront(self, item): Moves front pointer in counter-clockwise first. Then pushes item into front position.
     def appendLeft(self, item):
-        # Add capacity to prevent front pointer having negative integer.
-        self.left = ((self.left - 1) + self.capacity) % self.capacity
-        self.ud[self.left] = item
+        if not self.is_full():
+            # Add capacity to prevent front pointer having negative integer.
+            self.left = ((self.left - 1) + self.capacity) % self.capacity
+            self.ud[self.left] = item
+        else:
+            print("Deque is full currently. append cannot be processed!")
     
     def pop(self):
-        self.right = ((self.right - 1) + self.capacity) % self.capacity
-        popped = self.ud[self.right]
-        self.ud[self.right] = None # Avoid loitering
         
-        return popped
+        if not self.is_empty():
+            self.right = ((self.right - 1) + self.capacity) % self.capacity
+            popped = self.ud[self.right]
+            self.ud[self.right] = None # Avoid loitering
+            
+            return popped
+        else:
+            print("Deque is empty. pop cannot be processed!")
 
     def popLeft(self):
-        popped = self.ud[self.left]
-        self.ud[self.left] = None
-        self.left = (self.left + 1) % self.capacity
-        
-        return popped
+        if not self.is_empty():    
+            popped = self.ud[self.left]
+            self.ud[self.left] = None
+            self.left = (self.left + 1) % self.capacity
+            
+            return popped
+        else:
+            print("Deque is empty. pop cannot be processed currently.")
 
     def peek(self):
         return self.ud[((self.right - 1) + self.capacity) % self.capacity]
