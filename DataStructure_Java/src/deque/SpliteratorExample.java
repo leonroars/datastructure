@@ -13,12 +13,6 @@ public class SpliteratorExample {
             // Use trySplit() to split the original into two spliterators
             Spliterator<Integer> sp2 = sp1.trySplit();
 
-            // If the original could be split, use both spliterators
-//            if(spliterator1 != null) {
-//                System.out.println("Output from spliterator1:");
-//                spliterator1.forEachRemaining(System.out::println);
-//            }
-
             System.out.println("Output from sp1(Original Spliterator)");
             sp1.forEachRemaining(System.out :: println);
 
