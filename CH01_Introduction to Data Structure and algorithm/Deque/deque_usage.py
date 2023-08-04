@@ -42,4 +42,3 @@ print(dq)
 
 dq.clear()
 print(dq)
-

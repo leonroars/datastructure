@@ -1,4 +1,4 @@
-class simple_circularqueue:
+class UserCircularqueue:
     def __init__(self):
         self.front = 0
         self.rear = 0

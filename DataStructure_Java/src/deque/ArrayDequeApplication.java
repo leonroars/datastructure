@@ -5,5 +5,6 @@ public class ArrayDequeApplication {
         ArrayDeque<String> ad2 = new ArrayDeque<>(6);
 
 
+
     }
 }
