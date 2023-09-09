@@ -13,6 +13,10 @@ public class SpliteratorExample {
             // Use trySplit() to split the original into two spliterators
             Spliterator<Integer> sp2 = sp1.trySplit();
 
+            //Check each spliterator's estimateSize()
+            System.out.printf("sp1_estimateSize() : %d\n", sp1.estimateSize());
+            System.out.printf("sp2_estimateSize() : %d\n", sp2.estimateSize());
+
             System.out.println("Output from sp1(Original Spliterator)");
             sp1.forEachRemaining(System.out :: println);
 
@@ -20,11 +24,15 @@ public class SpliteratorExample {
             System.out.println("\nOutput from spliterator2(Newly created Spliterator):");
             sp2.forEachRemaining(System.out::println);
 
+            // Checking remaining size. As spliterator 'consumes' the elements, They should return `0`
+            System.out.printf("sp1_estimateSize() : %d\n", sp1.estimateSize()); // Returns 0
+            System.out.printf("sp2_estimateSize() : %d\n", sp2.estimateSize()); // Returns 0
+
             /*
             "characteristics() of Spliterator"
             characteristics()
                 - Methods that holding pre-defined `characteristics` of spliterator & its source collection as `integer value`.
-                - And it returns result of bit-wise OR operation as `integer`.
+                - And it returns result of bit-wise OR operation - which will include all characteristics this spliterator/source has - as `integer`.
                     - This is quite understandable if you know that bit-wise OR is actually an `union` operation in set theory.
                     - As a result, returned integer would be able to hold information about `what kind of characteristics does this spliterator & source has?'.
 
@@ -67,8 +75,14 @@ public class SpliteratorExample {
             System.out.printf("charac2 : %d\n", charac2);
             System.out.printf("charac2_Binary : %s\n", charac2Binary);
 
-            // Verifying if current spliterator has certain `characteristic`.
-            System.out.printf("spliterator1 's characteristic is IMMUTABLE? : %d\n", charac1 & sp1.IMMUTABLE); // Returns 0: This spliterator and its source do not have 'IMMUTABLE'
-            System.out.printf("spliterator 's characteristic is NONNULL? : %d\n", charac2 & sp2.NONNULL); // Returns 0: This spliterator and its source do not have 'NONNULL'
+            /* "Verifying if current spliterator has certain `characteristic`"
+                Source: List
+                Characteristics of it: SIZED, ORDERED
+
+                Thus, & operation with only 'ORDERED, SIZED' should return value that is not 0.
+             */
+            System.out.printf("spliterator1's characteristic is IMMUTABLE? : %d\n", charac1 & sp1.IMMUTABLE); // Returns 0: This spliterator and its source do not have 'IMMUTABLE'
+            System.out.printf("spliterator's characteristic is NONNULL? : %d\n", charac2 & sp2.NONNULL); // Returns 0: This spliterator and its source do not have 'NONNULL'
+            System.out.printf("spliterator's characteristic has ORDEREd? : %d\n", charac1 & sp1.ORDERED); // Returns result != 0. This means it has ORDERED.
         }
     }
