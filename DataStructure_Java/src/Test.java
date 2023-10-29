@@ -3,7 +3,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Test {
     public static void main(String[] args) {
@@ -12,11 +14,17 @@ public class Test {
         Object s2 = s1; // Parent p = c : Working
         //String k2 = k; _ Child c = p : Not working. => Violates principle of 'Subtype Polymorphism'.
 
-        String[] strArr = {"hello"};
-        Object[] objArr = new Object[6];
-        objArr[0] = "hello";
-        objArr[1] = 30;
-        System.out.println(Arrays.toString(objArr));
+        Integer[] intArr = {0, 1, 2};
+        Object[] objArr = intArr;
+        objArr[0] = "s";
+
+        Set<String> strSet = new HashSet<>();
+        Set intSet = strSet;
+
+
+
+
+
 
 
         List<Object> strLst = new ArrayList<>();

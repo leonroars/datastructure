@@ -1,9 +1,14 @@
+import java.sql.Array;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
 public class CovarianceContravariance {
 
     // 1. Demonstration of Invariance
-    public void readMaterialList(List<Material> materialList){for(Material m : materialList){System.out.println(m);}}
+    public void readMaterialList(List<Material> materialList){
+        for(Material m : materialList){System.out.println(m);}
+    }
 
     // 2. Demonstration of Covariance
     public void readSubMaterialList(List<? extends Material> subMaterialList){
@@ -55,7 +60,8 @@ public class CovarianceContravariance {
 
     }
 
-    public void readSupList(List<? super StandardGlass> supList){
+    // 3. Demonstration of Contravariance
+    public void readSupList(List<? super Glass> supList){
 
         /* 1) Extraction / Retrieve
          * Correct !!
@@ -69,12 +75,29 @@ public class CovarianceContravariance {
 
         /* 2) Adding Element
          * As I stated above, this is easily understandable.
-         *  - Under the subtype polymorphism rule in Java, only most 'childish' class can be accepted
-         *      in every possiblly instantiated type of given condition - ? super StandardGlass -.
-         *  - Conclusion: In lowerbound wildcard - ? super Klass -, Adding is only allowed for the type of Klass or its subtypes.
+         *  - Under the subtype polymorphism rule in Java, only the most 'childish' class can be inserted.
+         *  - Conclusion: In lower bound wildcard - ? super Klass -, Adding is only allowed for the type of Klass or its subtypes.
          */
         // supList.add(new Material());  - Wrong!
         supList.add(new StandardGlass()); // Correct!
+    }
+
+    public static void main(String[] args){
+
+        CovarianceContravariance covTest = new CovarianceContravariance();
+
+        List<Material> matList = new ArrayList<>();
+        List<Wood> wdList = new ArrayList<>();
+        List<Metal> mtList = new ArrayList<>();
+
+        matList.add(new Wood());
+        matList.add(new Metal());
+
+        covTest.readMaterialList(matList); // Works fine.
+        covTest.readSupList(matList);
+
+
+
     }
 
 }
@@ -93,6 +116,7 @@ class Material{
     int width;
     int height;
     int depth;
+    double price;
 }
 
 class Wood extends Material{
