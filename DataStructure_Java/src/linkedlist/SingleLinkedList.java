@@ -71,8 +71,10 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
 
     // addFirst(Item item) : O(1)
     public void addFirst(Item item){
-        Node<Item> newNode = new Node<>(item);
+        Node<Item> newNode = new Node<>();
+        newNode.item = item;
         newNode.next = head;
+
         head = newNode;
         // Edge-case handling
         if(size == 0){tail = newNode;}
@@ -91,14 +93,14 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
 
     // addLast(Item item) : O(1)
     public void addLast(Item item){
-        Node<Item> newNode = new Node<>();
-        newNode.item = item;
+        Node<Item> newNode = new Node<>(item);
         newNode.next = null;
 
         // Edge-case handling.
         if(size == 0){head = newNode; tail = newNode;}
 
         tail.next = newNode;
+        tail = newNode;
         size++;
     }
 
@@ -173,20 +175,23 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("Current Singly Linked_List Status : \n");
-        Node<Item> iterLoc = head;
+        Node<Item> loc = head;
 
-        for(int i = 0; i < size; i++){
-            String currentItem = iterLoc.item.toString();
+        while(loc != null){
+            Item locItem = loc.item;
+            String currentItem = locItem.toString();
             sb.append(currentItem);
-            if(i == 0){
+            if(loc == head){
                 sb.append("(head) -> ");
             }
-            if(i == size - 1){
+            else if(loc.next == null){
                 sb.append("(tail)_END");
+            } else{
+                sb.append(" -> ");
             }
-            sb.append(" -> ");
-        }
 
+            loc = loc.next;
+        }
         return sb.toString();
     }
 
@@ -223,12 +228,17 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
 
     }
 
+
+    // TestApplication.
     public static void main(String[] args){
         SingleLinkedList<Integer> sl = new SingleLinkedList<>();
         sl.addFirst(0);
         sl.addLast(1);
         sl.addLast(2);
+        sl.addLast(3);
+        sl.addFirst(-1);
 
-        System.out.println(sl.toString());
+        System.out.println(sl);
+
     }
 }
