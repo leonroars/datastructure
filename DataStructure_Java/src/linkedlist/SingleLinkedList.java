@@ -74,6 +74,8 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
         Node<Item> newNode = new Node<>(item);
         newNode.next = head;
         head = newNode;
+        // Edge-case handling
+        if(size == 0){tail = newNode;}
         size++;
     }
 
@@ -81,6 +83,9 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
     public void addFirst(Node<Item> node){
         node.next = head;
         head = node;
+        // Edge-case handling
+        if(size == 0){tail = node;}
+
         size++;
     }
 
@@ -224,6 +229,6 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
         sl.addLast(1);
         sl.addLast(2);
 
-        sl.toString();
+        System.out.println(sl.toString());
     }
 }
