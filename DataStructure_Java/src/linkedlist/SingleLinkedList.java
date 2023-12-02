@@ -1,5 +1,6 @@
 package linkedlist;
 
+import java.sql.SQLOutput;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -8,7 +9,7 @@ import java.util.NoSuchElementException;
 public class SingleLinkedList<Item> implements Iterable<Item> {
 
     // Node definition.
-    private class Node<Item>{
+    private static class Node<Item>{
         Item item;
         Node<Item> next;
 
@@ -73,13 +74,13 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
 
     // addFirst(Item item) : O(1)
     public void addFirst(Item item){
-        Node<Item> newNode = new Node<>();
-        newNode.item = item;
+        Node<Item> newNode = new Node<>(item);
         newNode.next = head;
 
-        head = newNode;
         // Edge-case handling
         if(size == 0){tail = newNode;}
+        head = newNode;
+
         size++;
     }
 
@@ -114,6 +115,7 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
         if(size == 0){head = node; tail = node;}
 
         tail.next = node;
+        tail = node;
         size++;
     }
 
@@ -124,6 +126,7 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
         if(size == 0){return null;}
 
         Node<Item> target = head;
+        head = target.next;
         target.next = null;
 
         size--;
@@ -140,15 +143,18 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
     // removeLast() : O(n), as it requires iteration over consisting nodes till it reaches (n-1)th node to update its next pointer.
     public Node<Item> removeLast(){
         // Edge-case handling I
-        if(size == 0){return null;}
+        if(size == 0){
+            System.out.println("Currently Empty");
+            return tail;
+        }
 
         Node<Item> iter = head;
+        Node<Item> result = tail;
 
         while(iter.next != tail){
             iter = iter.next;
         }
-
-        iter.next = null;
+        iter.next = tail.next;
         tail = iter;
 
         size--;
@@ -156,7 +162,7 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
         // Edge-case handling II
         if(size == 0){head = null; tail = null;}
 
-        return iter;
+        return result;
     }
 
     // get(int index)_Search By Index : O(n)
@@ -194,9 +200,10 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
 
         // Edge case handling : If (index == 0). This has to be handled before calling get() or it can cause exception directly.
         if(index == 0){addFirst(item); return true;}
+        if(index == size){addLast(item); return true;}
 
-        Node<Item> priorIdx = get(index - 1);
         Node<Item> newNode = new Node<>(item);
+        Node<Item> priorIdx = get(index - 1);
         newNode.next = priorIdx.next;
         priorIdx.next = newNode;
 
@@ -209,6 +216,7 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
     public boolean insert(int index, Node<Item> node){
 
         if(index == 0){addFirst(node);}
+        if(index == size){addLast(node);}
 
         Node<Item> priorIdx = get(index - 1);
 
@@ -224,8 +232,8 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
     // remove(int index) : O(n). Remove node at given index location. Internally calls get().
     public Node<Item> remove(int index){
         // Edge case handling.
-        if(index == 0){removeFirst();}
-        if(index == size - 1){removeLast();}
+        if(index == 0){return removeFirst();}
+        if(index == size - 1){return removeLast();}
 
         Node<Item> priorIdx = get(index - 1);
         Node<Item> removed = priorIdx.next;
@@ -233,7 +241,29 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
         priorIdx.next = removed.next;
         removed.next = null;
 
+        size--;
+
+        if(size == 0){head = null; tail = null;}
+
         return removed;
+    }
+
+    // removeAll() : O(n). Delete all elements.
+    public void removeAll(){
+        // This makes all the nodes unreachable, thus their memory space will be reclaimed by GC.
+        // But the SingleLinkedList instance will be alive.
+        head = null;
+        tail = null;
+        size = 0;
+        // Logic below is my first version of implementation, But it has possibility for causing memory leak.
+//        Node<Item> eraserFront = head;
+//        Node<Item> eraserRear = eraserFront;
+//
+//        for(int i = 0; i < size; i++){
+//            eraserFront = eraserRear;
+//            eraserRear = eraserRear.next;
+//            eraserFront.next = null;
+//        }
     }
 
 
@@ -242,7 +272,7 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
         // 1. Swap head & tail.
         Node<Item> temp = head;
         head = tail;
-        tail = head;
+        tail = temp;
 
         // 2. Three-finger Initialize.
         Node<Item> before = null;
@@ -264,13 +294,16 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
 
     // toString() : Using BufferedWriter
     public String toString(){
+        // Edge Case handling : Empty
+        if(size == 0){System.out.println("Currently Empty"); return null;}
+
         StringBuilder sb = new StringBuilder();
         sb.append("Current Singly Linked_List Status : \n");
         Node<Item> loc = head;
 
         while(loc != null){
-            Item locItem = loc.item;
-            String currentItem = locItem.toString();
+
+            String currentItem = loc.toString();
             sb.append(currentItem);
             if(loc == head){
                 sb.append("(head) -> ");
@@ -291,7 +324,7 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
 
     private class LLIterator implements Iterator<Item>{
 
-        Node<Item> iterLoc;
+        Node<Item> iterLoc = head;
         int remaining;
 
         public LLIterator(){
@@ -307,7 +340,6 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
             //    'how to refer OuterClass instance inside InnerClass' seemed to be worth commented.
 
             Item returned;
-            iterLoc = head;
             returned = iterLoc.item;
             iterLoc = iterLoc.next;
             remaining--;
@@ -322,18 +354,80 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
 
     // TestApplication.
     public static void main(String[] args){
+
+        // Initialization Test
         SingleLinkedList<Integer> sl = new SingleLinkedList<>();
+
+        // Basic Adding Operation Test. ==> Passed!
         sl.addFirst(0);
         sl.addLast(1);
         sl.addLast(2);
         sl.addLast(3);
         sl.addFirst(-1);
 
-        System.out.println(sl);
-        System.out.println(sl.get(3)); // Should return 2
+        System.out.printf("Current head : %s\n", sl.head);
+        System.out.printf("Current tail : %s\n", sl.tail);
+        System.out.println(sl); // -1(head) -> 0 -> 1 -> 2 -> 3(tail)_END
 
-        sl.reverse();
+        // removeAll() Test. ==> Passed!
+        sl.removeAll();
         System.out.println(sl);
+        System.out.printf("Current head : %s\n", sl.head);
+        System.out.printf("Current tail : %s\n", sl.tail);
+
+        // insert(int index, Item item) & insert(int index, Node<Item> node) Test ==> Passed!
+        sl.insert(0, 0);
+        sl.insert(1, 1);
+        sl.insert(2, 2);
+        sl.insert(2, 3);
+        sl.insert(3, 4);
+        Node<Integer> newNode = new Node<>(5);
+        sl.insert(4, newNode);
+
+        System.out.println(sl);
+
+        // get() & set() Test ==> Passed!
+        for(int i = 0; i < sl.size(); i++){
+            if(Integer.parseInt(sl.get(i).toString()) != i){
+                sl.set(i, i);
+            }
+            System.out.println(sl.get(i));
+        }
+        System.out.println(sl);
+
+        // Status Method Test : size(), this.head, this.tail ==> Passed
+        System.out.printf("Current head : %s\n", sl.head); // Expected = 0/ Result = 0
+        System.out.printf("Current tail : %s\n", sl.tail); // Expected = 5 / Result = 5
+        System.out.printf("Current size : %d\n", sl.size()); // Expected = 6 / Result = 6
+
+        // remove(), removeLast(), removeFirst() Test
+        sl.remove(4); // Removed - index : 4 / item : 4
+        sl.remove(4); // Removed - index : 4(removeLast()) / item 5;
+        sl.removeFirst();
+
+        System.out.println(sl); // Expected : 1(head) -> 2 -> 3(tail)
+        System.out.printf("Current head : %s\n", sl.head); // Expected = 1/ Result = 1
+        System.out.printf("Current tail : %s\n", sl.tail); // Expected = 3 / Result = 3
+        System.out.printf("Current size : %d\n", sl.size()); // Expected = 3 / Result = 3
+
+        // reverse() Test
+        sl.reverse();
+        System.out.println(sl); // Expected : 3(head) -> 2 -> 1(tail)
+        System.out.printf("Current head : %s\n", sl.head); // Expected = 3/ Result = 3
+        System.out.printf("Current tail : %s\n", sl.tail); // Expected = 1 / Result = 1
+        System.out.printf("Current size : %d\n", sl.size()); // Expected = 3 / Result = 3
+
+
+        /*
+        TEST DONE!
+         */
+
+
+
+
+
+
+
 
     }
 }
