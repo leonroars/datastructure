@@ -123,7 +123,7 @@ public class SingleLinkedList<Item> implements Iterable<Item> {
     // removeFirst() : O(1). Returns the node head is pointing, and decrease size by 1. If size == 0, return null.
     public Node<Item> removeFirst(){
         // Edge-case handling I
-        if(size == 0){return null;}
+        if(size == 0){return head;} // It will return null anyway. Without using any extra memory space for `target` node.
 
         Node<Item> target = head;
         head = target.next;
