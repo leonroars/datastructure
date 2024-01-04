@@ -127,7 +127,7 @@ public class DoublyLinkedList<Item> implements Iterable<Item> {
         if(size == 0){head = tail = newNode;}
         else{
             newNode.next = null;
-            newNode.prev = tail.prev;
+            newNode.prev = tail;
 
             tail.next = newNode;
             tail = newNode;
@@ -244,7 +244,7 @@ public class DoublyLinkedList<Item> implements Iterable<Item> {
     // boolean insert(int index, Item item) : O(n).
     public boolean insert(int index, Item item){
         if(index == 0 || size == 0){addFirst(item); return true;}
-        if(index == size - 1){addLast(item); return true;}
+        if(index == size){addLast(item); return true;}
 
         Node<Item> newNode = new Node<>(item);
         Node<Item> priorIdx = get(index - 1);
@@ -283,10 +283,20 @@ public class DoublyLinkedList<Item> implements Iterable<Item> {
     public boolean reverse(){
         if(size == 0){System.out.println("Nothing To Reverse."); return false;}
 
+        // Swapping head & tail to each other.
         Node<Item> temp = head;
         head = tail;
         tail = temp;
 
+        Node<Item> iter = head;
+        // Swap prev & next of each node during iteration.
+        for(int i = 0; i < size; i++){
+            temp = iter.prev;
+            iter.prev = iter.next;
+            iter.next = temp;
+
+            iter = iter.next;
+        }
         return true;
     }
     // String toString() : To make whole Doubly Linked List instance be printable.
@@ -310,7 +320,7 @@ public class DoublyLinkedList<Item> implements Iterable<Item> {
     private class DLLIterator implements Iterator<Item>{
 
         int remaining;
-
+        Node<Item> iterLoc = head;
         public DLLIterator(){remaining = size;}
 
         // Q: 'remove()' in 'linkedlist.DoublyLinkedList.DLLIterator' clashes with 'remove()' in 'java.util.Iterator'; attempting to assign weaker access privileges ('private'); was 'public'
@@ -318,9 +328,9 @@ public class DoublyLinkedList<Item> implements Iterable<Item> {
 
         // Q : next()' in 'linkedlist.DoublyLinkedList.DLLIterator' clashes with 'next()' in 'java.util.Iterator'; attempting to use incompatible return type
         public Item next(){
-            Node<Item> iterLoc = head;
             Node<Item> temp = iterLoc;
             iterLoc = iterLoc.next;
+            remaining--;
 
             return temp.item;
         }
@@ -346,13 +356,28 @@ public class DoublyLinkedList<Item> implements Iterable<Item> {
         ddl.remove(0);
         System.out.println(ddl);
 
-        // Add Operations Test
+        // Add Operations Test ==> Passed!
         ddl.addLast(1);
         ddl.addFirst(0);
         ddl.addLast(2);
         ddl.addLast(4);
         ddl.insert(3, 3);
+        System.out.println(ddl); // Expected & Result : 0(head) -> 1 -> 2 -> 3 -> 4(tail)
+
+        // reverse() Test : Passed!
+        ddl.reverse();
         System.out.println(ddl);
+
+        // removeFirst(), removeLast(), size() Test : Passed!
+        ddl.removeFirst();
+        ddl.removeLast();
+        System.out.println(ddl);
+        System.out.println(ddl.size());
+
+        // iterator() Test : Passed!
+        for(Object o : ddl){
+            System.out.println(o);
+        }
     }
 
 
