@@ -178,10 +178,102 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         if (cmp > 0){prev.right = traveler;}
     }
 
-    /*---------------Utility Method Implementation------------*/
-    // BFS
-    public void printTree(){
+    /*------------Order-base Operations Implementation---------*/
 
+    /**
+     * User-interface method. It internally invokes class-private min(Node x) method.
+     * @return The smallest key.
+     */
+    public K min(){
+        return min(root).key;
+    }
+
+    /**
+     * Recursively explores & return the node which is located at the deepest depth in the left-most subtree side.
+     * @param x - Start point node.
+     * @return The node which has the smallest key in tree.
+     */
+    private Node<K, V> min(Node<K, V> x){
+        if(x == null){throw new IllegalArgumentException("Cannot take null input as argument.");}
+        if(x.left == null){return x;}
+        return min(x.left);
+    }
+
+    /**
+     * User-interface method. It internally invokes class-private max(Node x) method.
+     * @return The largest key.
+     */
+    public K max(){
+        return max(root).key;
+    }
+
+    /**
+     * Recursively explores & return the node which is located at the deepest depth in the right-most subtree side.
+     * @param x - Start point node.
+     * @return The node which has the largest key in tree.
+     */
+    private Node<K, V> max(Node<K, V> x){
+        if(x == null){throw new IllegalArgumentException("Cannot take null input as argument.");}
+        if(x.left == null){return x;}
+        return max(x.right);
+    }
+
+    /**
+     * User-interface method. Returns the largest key in the keys that is smaller than given key.
+     * @param key - target key
+     * @return The largest key value among the ones which is smaller than given key.
+     */
+    public K floor(K key){
+        return floor(root, key).key;
+    }
+
+    /**
+     * Recursively explores tree start from given node and returns the largest key among the smaller keys.<br>
+     * (Largest key <= given key)
+     * <p>
+     * The way it works in recursive manner is concise, yet quite tricky to understand. WATCH CAREFULLY.
+     * @param x - Start point node.
+     * @param key - target key.
+     * @return The largest key value in the keys that is smaller than given key.
+     */
+    private Node<K, V> floor(Node<K, V> x, K key){
+        if(x == null){return null;}
+
+        int cmp = key.compareTo(x.key);
+        if(cmp < 0){return floor(x.left, key);}
+        if(cmp == 0){return x;}
+
+        Node<K, V> resultFromRSub = floor(x.right, key);
+        if(resultFromRSub != null){return resultFromRSub;}
+        else return x; // // This means, that there's no smaller node in right subtree of current node. Thus, current node is the floor.
+    }
+
+    public K ceiling(K key){
+        return ceiling(root, key).key;
+    }
+
+    private Node<K, V> ceiling(Node<K, V> x, K key){
+        if(x == null){return null;}
+
+        int cmp = key.compareTo(x.key);
+        if(cmp == 0){return x;}
+        if(cmp > 0){return ceiling(x.right, key);}
+        Node<K, V> resultFromLSub = floor(x.left, key);
+        if(resultFromLSub != null){return resultFromLSub;}
+        else return x;
+    }
+
+
+
+    /*---------------Utility Method Implementation------------*/
+
+    /**
+     * Traverse given tree in BFS manner, and append every node in StringBuilder.
+     * <br>
+     * Single line in StringBuilder will hold the nodes in same level and delimited by space.
+     */
+    public void printTree(){
+        
     }
     public static void main(String[] args){
         BinarySearchTree<Integer, String> bst = new BinarySearchTree<>();
