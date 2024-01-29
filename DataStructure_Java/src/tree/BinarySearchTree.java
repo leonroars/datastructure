@@ -177,6 +177,38 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         if(cmp < 0){prev.left = traveler;}
         if (cmp > 0){prev.right = traveler;}
     }
+    /*------------------------------ Deletion Methods ------------------------------*/
+    public void deleteMin(){
+        root = deleteMin(root);
+    }
+
+    /**
+     * Delete the node which having the smallest key in given tree or subtree.<br>
+     * <p>Code from <i>Algorithms</i> by Robert Sedgewick & Kevin Wayne.
+     * @param x - A root of whole tree or subtree.
+     * @return A root of tree that minimum node has been deleted.
+     */
+    private Node<K, V> deleteMin(Node<K, V> x){
+        if(x.left == null){return x.right;}
+        x.left = deleteMin(x.left);
+        x.N = size(x.left) + size(x.right) + 1;
+        return x;
+    }
+
+    public void delete(K key){
+        root = delete(root, key);
+    }
+
+    /**
+     * This deletion is implementation of deletion algorithm proposed by Thomas Hibbard in 1962.<br>
+     * <p>Code from <i>Algorithms</i> by Robert Sedgewick & Kevin Wayne.
+     * @param x - Starting point. A root of whole tree or subtree.
+     * @param key - Target key value.
+     * @return A root of tree or subtree that the target node is eliminated if it has existed.
+     */
+    private Node<K, V> delete(Node<K, V> x, K key){
+
+    }
 
     /*------------Order-base Operations Implementation---------*/
 
