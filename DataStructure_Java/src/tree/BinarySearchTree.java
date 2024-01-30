@@ -2,6 +2,7 @@ package tree;
 
 import java.util.EmptyStackException;
 import java.util.NoSuchElementException;
+import java.util.ArrayList;
 
 public class BinarySearchTree<K extends Comparable<K>, V> {
 
@@ -24,6 +25,18 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
             this.key = key;
             this.value = value;
             this.N = 1;
+        }
+
+        public String toString(){
+            StringBuilder sb = new StringBuilder();
+            String key = this.key.toString();
+            String value = this.value.toString();
+            sb.append("{");
+            sb.append(key);
+            sb.append(" : ");
+            sb.append(value);
+            sb.append("}");
+            return sb.toString();
         }
     }
 
@@ -154,6 +167,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         // Updating the number of nodes in its subtree.
         x.N = size(x.left) + size(x.right) + 1;
 
+
         return x;
     }
 
@@ -167,8 +181,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         while(traveler != null){
 
             int cmp = key.compareTo(traveler.key);
-            if(cmp < 0){prev = traveler; traveler = traveler.left;}
-            if(cmp > 0){prev = traveler; traveler = traveler.right;}
+            if(cmp < 0){prev = traveler; prev.N++; traveler = traveler.left;}
+            if(cmp > 0){prev = traveler; prev.N++; traveler = traveler.right;}
             if(cmp == 0){traveler.value = value; return;}
         }
         traveler = newNode(key, value, 1);
@@ -267,7 +281,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      */
     private Node<K, V> max(Node<K, V> x){
         if(x == null){throw new IllegalArgumentException("Cannot take null input as argument.");}
-        if(x.left == null){return x;}
+        if(x.right == null){return x;}
         return max(x.right);
     }
 
@@ -311,7 +325,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         int cmp = key.compareTo(x.key);
         if(cmp == 0){return x;}
         if(cmp > 0){return ceiling(x.right, key);}
-        Node<K, V> resultFromLSub = floor(x.left, key);
+        Node<K, V> resultFromLSub = ceiling(x.left, key);
         if(resultFromLSub != null){return resultFromLSub;}
         else return x;
     }
@@ -325,14 +339,85 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * <br>
      * Single line in StringBuilder will hold the nodes in same level and delimited by space.
      */
-    public void printTree(){
-        
-    }
-    public static void main(String[] args){
-        BinarySearchTree<Integer, String> bst = new BinarySearchTree<>();
-        bst.putNode(5, "root A_Added First");
-        bst.putNode(2, "B_second");
-//        bst.put(8, )
+    public String printTree(){
+        if(root == null){return null;}
+        else{
+            StringBuilder sb = new StringBuilder();
+            ArrayList<Node<K, V>> Q = new ArrayList<>();
 
+            int currentLevel = 0; // Level Indicator. This will be printed at the front side of each line.
+            int levelCounter = 0; // The number of nodes in same level.
+            int nextLevelCounter = 0; // The number of nodes in next level.
+            Q.add(root);
+            levelCounter = 1;
+
+            while(!Q.isEmpty()){ // BFS CODE
+                sb.append("Level ");
+                sb.append(currentLevel);
+                sb.append(" - ");
+                while(levelCounter != 0){
+                    Node<K, V> locator = Q.remove(0); // BFS CODE
+                    levelCounter--;
+                    sb.append(locator.toString());
+                    sb.append(" ");
+
+                    if(locator.left != null){Q.add(locator.left); nextLevelCounter++;} // BFS CODE
+                    if(locator.right != null){Q.add(locator.right); nextLevelCounter++;} // BFS CODE
+                }
+                levelCounter = nextLevelCounter;
+                nextLevelCounter = 0;
+                sb.append("\n");
+                currentLevel++;
+            }
+
+            return sb.toString();
+
+        }
+    }
+    // Test Program
+    public static void main(String[] args){
+
+        // 0. BST Initialization : Passed!
+        BinarySearchTree<Integer, String> bst = new BinarySearchTree<>();
+
+        // 1. putNode() & put() Test : Passed!
+        bst.putNode(5, "A");
+        bst.putNode(2, "B");
+        bst.putNode(13, "G"); // Mis-inserted on purpose to test update functionality of put();
+        bst.putNode(1, "D");
+        bst.put(8, "E");
+        bst.put(7, "F");
+        bst.put(13, "C");
+
+        // 2. printTree() & size() Test : Passed!
+        System.out.println(bst.printTree());
+        System.out.printf("Current Tree Size : %d\n", bst.size());
+
+        // 3. deleteMin() & delete() Test: Passed!
+        bst.deleteMin(); // Should delete a node {1:D}.
+        System.out.println(bst.printTree());
+        System.out.printf("Current Tree Size : %d\n", bst.size());
+
+        bst.delete(8); // Deleting non-leaf node and check if it changes given tree properly.
+        System.out.println(bst.printTree());
+        System.out.printf("Current Tree Size : %d\n", bst.size());
+        System.out.println("\n");
+
+        bst.put(6, "G");
+        bst.put(9, "H");
+        bst.put(11, "I");
+        bst.putNode(3, "J");
+        bst.putNode(1, "K");
+
+        System.out.println(bst.printTree());
+        System.out.printf("Current Tree Size : %d\n", bst.size());
+
+        // 4. floor() / ceiling() Test : Passed!
+        System.out.println(bst.floor(8)); // Should return 7.
+        System.out.println(bst.ceiling(10)); // Should return 11.
+
+        // 5. min() / max() Test : Passed!
+        System.out.println(bst.max()); // Should return 13.
+        System.out.println(bst.min()); // Should return 1.
     }
 }
