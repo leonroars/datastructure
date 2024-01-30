@@ -189,7 +189,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * @return A root of tree that minimum node has been deleted.
      */
     private Node<K, V> deleteMin(Node<K, V> x){
-        if(x.left == null){return x.right;}
+        if(x.left == null){return x.right;} // Base Case
         x.left = deleteMin(x.left);
         x.N = size(x.left) + size(x.right) + 1;
         return x;
@@ -207,7 +207,28 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * @return A root of tree or subtree that the target node is eliminated if it has existed.
      */
     private Node<K, V> delete(Node<K, V> x, K key){
+        if(x == null){return null;} // Base Case I
+        int cmp = key.compareTo(x.key);
+        if(cmp == 0){ // Base Case II
+            // Handling these two cases separately can improve efficiency as it eliminates unnecessary procedures.
+            if(x.left == null){return x.right;}
+            if(x.right == null){return x.left;}
 
+            Node<K, V> successor = min(x.right); // Find & Assign the smallest node in x's right subtree. This will replace x.
+            successor.right = deleteMin(x.right);
+            successor.left = x.left;
+            x = successor; // Replace x with its successor.
+        }
+        if(cmp < 0){x.left = delete(x.left, key);}
+        if(cmp > 0){x.right = delete(x.right, key);}
+
+        // Since updating 'node.N' is not only for the node that has been replaced but for all its upper level nodes,
+        // updating node size should be done at the outer area of case-handiling(if) blocks.
+        // So that every time we come back to upper-level stack frame from end-most stack frame,
+        // Each node.N can be safely updated properly.
+        x.N = size(x.left) + size(x.right) + 1;
+
+        return x;
     }
 
     /*------------Order-base Operations Implementation---------*/

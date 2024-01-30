@@ -338,6 +338,7 @@ public class HashTable<K, V> {
         ht.insert(19950719, "Manuel Akanji");
         ht.insert(19960622, "Rodri");
 
+
         // toString() Test : PASS
         System.out.println(ht);
 
