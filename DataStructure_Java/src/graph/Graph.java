@@ -71,8 +71,6 @@ public class Graph {
      * @return ArrayList<Integer> dfs - Vertices visited in order of DFS.
      */
     public ArrayList<Integer> DFS(int v){
-//        ArrayList<Integer> dfs = new ArrayList<>();
-//        BitSet visited = new BitSet(this.V); // Creat V-bit size BitSet for storing visited vertices.
         visited.set(v);
         dfs.add(v);
         for(int u : adj[v]){
@@ -80,7 +78,6 @@ public class Graph {
                 DFS(u);
             }
         }
-
         return dfs;
     }
 
